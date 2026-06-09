@@ -1,4 +1,3 @@
-import { IconHelpFilled } from "@tabler/icons-react";
 import {
   HeadContent,
   Link,
@@ -6,7 +5,6 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from "@tanstack/react-router";
-import { Button } from "@topsun-status/ui/components/button";
 
 import appCss from "@topsun-status/ui/styles/globals.css?url";
 
@@ -66,14 +64,6 @@ function RootDocument() {
             </div>
 
             <Outlet />
-
-            <Button
-              className="h-12 w-full text-base font-bold"
-              variant="outline"
-            >
-              <IconHelpFilled />
-              Dúvidas? Fale com a TOPSUN no WhatsApp!
-            </Button>
           </div>
         </div>
 

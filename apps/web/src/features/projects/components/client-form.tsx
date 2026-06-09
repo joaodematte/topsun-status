@@ -19,81 +19,21 @@ import {
 import { Input } from "@topsun-status/ui/components/input";
 import { useId } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { formatCpf, validateCpf } from "@/utils/cpf";
-import type { ProjectsById } from "@/utils/projects";
-import { PROJECTS_QUERY_KEY } from "@/utils/projects";
-import { mutations } from "@/utils/query";
-
-const BIRTH_DATE_MAX_DIGITS = 8;
-const BIRTH_DATE_DAY_END = 2;
-const BIRTH_DATE_MONTH_END = 4;
-
-function getDigits(value: string, maxLength: number): string {
-  let digits = "";
-
-  for (const character of value) {
-    if (character >= "0" && character <= "9") {
-      digits += character;
-    }
-
-    if (digits.length === maxLength) {
-      return digits;
-    }
-  }
-
-  return digits;
-}
-
-function formatBirthDate(value: string): string {
-  const digits = getDigits(value, BIRTH_DATE_MAX_DIGITS);
-  const day = digits.slice(0, BIRTH_DATE_DAY_END);
-  const month = digits.slice(BIRTH_DATE_DAY_END, BIRTH_DATE_MONTH_END);
-  const year = digits.slice(BIRTH_DATE_MONTH_END);
-
-  if (year) {
-    return `${day}/${month}/${year}`;
-  }
-
-  if (month) {
-    return `${day}/${month}`;
-  }
-
-  return day;
-}
-
-function parseBirthDateForRequest(value: string): string {
-  const digits = getDigits(value, BIRTH_DATE_MAX_DIGITS);
-  const day = digits.slice(0, BIRTH_DATE_DAY_END);
-  const month = digits.slice(BIRTH_DATE_DAY_END, BIRTH_DATE_MONTH_END);
-  const year = digits.slice(BIRTH_DATE_MONTH_END);
-
-  return `${year}-${month}-${day}`;
-}
-
-const clientFormSchema = z.object({
-  birthDate: z
-    .string()
-    .min(1, "Data de nascimento é obrigatória!")
-    .refine(
-      (birthDate) =>
-        getDigits(birthDate, BIRTH_DATE_MAX_DIGITS).length ===
-        BIRTH_DATE_MAX_DIGITS,
-      {
-        message: "Data de nascimento inválida",
-      }
-    ),
-  cpf: z.string().min(1, "CPF é obrigatório!").refine(validateCpf, {
-    message: "CPF inválido",
-  }),
-});
+import {
+  formatBirthDate,
+  parseBirthDateForRequest,
+} from "@/features/projects/lib/birth-date";
+import { formatCpf } from "@/features/projects/lib/cpf";
+import { fetchProjectsMutationOptions } from "@/features/projects/lib/queries";
+import { clientFormSchema } from "@/features/projects/schemas/client-form-schema";
+import type { ClientFormValues } from "@/features/projects/schemas/client-form-schema";
 
 export function ClientForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const form = useForm<z.infer<typeof clientFormSchema>>({
+  const form = useForm<ClientFormValues>({
     defaultValues: {
       birthDate: "",
       cpf: "",
@@ -104,25 +44,25 @@ export function ClientForm() {
   const cpfInputId = useId();
   const birthDateInputId = useId();
 
-  const { mutateAsync: getProjects, isError } = useMutation({
-    ...mutations.getProjects(),
-    onSuccess: (projects) => {
-      queryClient.setQueryData<ProjectsById>(PROJECTS_QUERY_KEY, projects);
-      navigate({ to: "/steps" });
-    },
-  });
+  const { isError, isPending, mutateAsync } = useMutation(
+    fetchProjectsMutationOptions(queryClient)
+  );
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    try {
-      const projects = await getProjects({
-        birthDate: parseBirthDateForRequest(data.birthDate),
-        cpf: data.cpf,
-      });
+    const query = {
+      birthDate: parseBirthDateForRequest(data.birthDate),
+      cpf: data.cpf,
+    };
 
-      queryClient.setQueryData<ProjectsById>(PROJECTS_QUERY_KEY, projects);
-      await navigate({ to: "/steps" });
+    try {
+      await mutateAsync(query);
+
+      await navigate({
+        search: query,
+        to: "/steps",
+      });
     } catch {
-      console.error("Failed to get projects");
+      // Error state is surfaced via mutation isError.
     }
   });
 
@@ -203,13 +143,12 @@ export function ClientForm() {
               <Button
                 className="h-12 text-base font-bold"
                 type="submit"
-                disabled={form.formState.isSubmitting}
+                disabled={isPending}
               >
-                {form.formState.isSubmitting
-                  ? "Consultando..."
-                  : "Consultar projetos"}
+                {isPending ? "Consultando..." : "Consultar projetos"}
               </Button>
             </Field>
+
             {isError && (
               <Field>
                 <Alert className="bg-destructive text-background border-destructive">

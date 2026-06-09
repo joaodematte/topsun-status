@@ -1,40 +1,18 @@
+import type { Project } from "@topsun-status/shared";
+
 import { database } from "@/database";
-import type { Etapa, Projeto, StepsByProjetoId } from "@/types";
+import type { Etapa, Projeto } from "@/types";
 
-const ETAPA_STATUS = {
-  COMPLETED: 1,
-  PENDING: 0,
-} as const;
-
-const createEmptyProjetoSteps = (projeto: Projeto): StepsByProjetoId => ({
-  completed: [],
+const createEmptyProject = (projeto: Projeto): Project => ({
   id: projeto.id_coleta,
-  pending: [],
   steps: [],
   uc: projeto.UCPrincipal_coleta,
 });
 
-const initializeStepsByProjetoId = (
-  projetos: Projeto[]
-): Record<number, StepsByProjetoId> =>
+const initializeProjectsById = (projetos: Projeto[]): Record<number, Project> =>
   Object.fromEntries(
-    projetos.map((projeto) => [
-      projeto.id_coleta,
-      createEmptyProjetoSteps(projeto),
-    ])
-  ) as Record<number, StepsByProjetoId>;
-
-const categorizeStep = (projetoSteps: StepsByProjetoId, step: Etapa): void => {
-  projetoSteps.steps.push(step);
-
-  if (step.status_etapa === ETAPA_STATUS.PENDING) {
-    projetoSteps.pending.push(step);
-  }
-
-  if (step.status_etapa === ETAPA_STATUS.COMPLETED) {
-    projetoSteps.completed.push(step);
-  }
-};
+    projetos.map((projeto) => [projeto.id_coleta, createEmptyProject(projeto)])
+  ) as Record<number, Project>;
 
 const findEtapasByProjetoIds = async (
   projetosId: number[]
@@ -50,24 +28,24 @@ const findEtapasByProjetoIds = async (
 
 export const getEtapasByProjetosId = async (
   projetos: Projeto[]
-): Promise<Record<number, StepsByProjetoId>> => {
+): Promise<Record<number, Project>> => {
   if (projetos.length === 0) {
     return {};
   }
 
   const projetosId = projetos.map((projeto) => projeto.id_coleta);
   const steps = await findEtapasByProjetoIds(projetosId);
-  const stepsByProjetoId = initializeStepsByProjetoId(projetos);
+  const projectsById = initializeProjectsById(projetos);
 
   for (const step of steps) {
-    const projetoSteps = stepsByProjetoId[step.cod_coleta_etapa];
+    const project = projectsById[step.cod_coleta_etapa];
 
-    if (!projetoSteps) {
+    if (!project) {
       continue;
     }
 
-    categorizeStep(projetoSteps, step);
+    project.steps.push(step);
   }
 
-  return stepsByProjetoId;
+  return projectsById;
 };

@@ -10,14 +10,7 @@ export interface Projeto extends RowDataPacket {
 }
 
 export interface Etapa extends RowDataPacket {
+  cod_cfg_etapa: number;
   cod_coleta_etapa: number;
   status_etapa: number;
-}
-
-export interface StepsByProjetoId {
-  id: number;
-  uc: string;
-  steps: Etapa[];
-  pending: Etapa[];
-  completed: Etapa[];
 }

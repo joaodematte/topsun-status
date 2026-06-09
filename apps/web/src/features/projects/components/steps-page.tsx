@@ -135,7 +135,7 @@ export function StepsPage({ query }: StepsPageProps) {
             rel="noopener noreferrer"
           >
             <IconHelpFilled />
-            Dúvidas? Fale com a TOPSUN no WhatsApp!
+            Você precisa de ajuda?
           </a>
         }
       />

@@ -1,51 +1,49 @@
-import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Toaster } from "@topsun-status/ui/components/sonner";
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
 
-import Header from "../components/header";
+import appCss from "@topsun-status/ui/styles/globals.css?url";
 
-import appCss from "../index.css?url";
-
-export interface RouterAppContext {}
-
-export const Route = createRootRouteWithContext<RouterAppContext>()({
+export const Route = createRootRouteWithContext()({
+  component: RootDocument,
   head: () => ({
+    links: [
+      {
+        href: appCss,
+        rel: "stylesheet",
+      },
+      {
+        href: "/icon.svg",
+        rel: "icon",
+        type: "image/svg+xml",
+      },
+    ],
     meta: [
       {
         charSet: "utf-8",
       },
       {
-        name: "viewport",
         content: "width=device-width, initial-scale=1",
+        name: "viewport",
       },
       {
-        title: "My App",
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
+        title: "Acompanhe o seu projeto — TOPSUN Energia",
       },
     ],
   }),
-
-  component: RootDocument,
 });
 
 function RootDocument() {
   return (
-    <html lang="en" className="dark">
+    <html lang="pt-BR" className="light">
       <head>
         <HeadContent />
       </head>
       <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
-          <Outlet />
-        </div>
-        <Toaster richColors />
-        <TanStackRouterDevtools position="bottom-left" />
+        <Outlet />
         <Scripts />
       </body>
     </html>

@@ -25,20 +25,21 @@
     "check-types": "turbo check-types",
     "dev:web": "turbo -F web dev",
     "dev:server": "turbo -F server dev",
-    "check": "oxlint && oxfmt --write"
+    "check": "ultracite check",
+    "fix": "ultracite fix"
   },
   "dependencies": {
-    "@topsun-status/env": "workspace:*",
     "dotenv": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@topsun-status/config": "workspace:*",
     "@types/bun": "catalog:",
-    "oxfmt": "^0.53.0",
-    "oxlint": "^1.68.0",
+    "oxfmt": "^0.54.0",
+    "oxlint": "^1.69.0",
     "turbo": "^2.9.16",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "ultracite": "7.8.2"
   },
   "packageManager": "bun@1.3.14"
 }

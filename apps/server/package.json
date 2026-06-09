@@ -10,9 +10,9 @@
     "start": "bun run dist/index.mjs"
   },
   "dependencies": {
-    "@topsun-status/env": "workspace:*",
     "dotenv": "catalog:",
     "hono": "^4.8.2",
+    "mysql2": "^3.22.5",
     "zod": "catalog:"
   },
   "devDependencies": {

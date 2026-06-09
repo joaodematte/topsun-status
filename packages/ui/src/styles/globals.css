@@ -49,6 +49,9 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
   --font-sans: "Inter Variable", sans-serif;
+
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
 }
 
 :root {
@@ -84,6 +87,9 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.3967 0.1529 319.25);
+
+  --tertiary: oklch(0.938 0.0124 317.74);
+  --tertiary-foreground: oklch(0.3953 0.1563 318.95);
 }
 
 .dark {

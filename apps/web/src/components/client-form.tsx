@@ -1,4 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { IconAlertCircleFilled } from "@tabler/icons-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@topsun-status/ui/components/alert";
 import { Button } from "@topsun-status/ui/components/button";
 import { Card, CardContent } from "@topsun-status/ui/components/card";
 import {
@@ -14,6 +22,9 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { formatCpf, validateCpf } from "@/utils/cpf";
+import type { ProjectsById } from "@/utils/projects";
+import { PROJECTS_QUERY_KEY } from "@/utils/projects";
+import { mutations } from "@/utils/query";
 
 const BIRTH_DATE_MAX_DIGITS = 8;
 const BIRTH_DATE_DAY_END = 2;
@@ -79,6 +90,9 @@ const clientFormSchema = z.object({
 });
 
 export function ClientForm() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const form = useForm<z.infer<typeof clientFormSchema>>({
     defaultValues: {
       birthDate: "",
@@ -90,17 +104,26 @@ export function ClientForm() {
   const cpfInputId = useId();
   const birthDateInputId = useId();
 
-  const handleSubmit = form.handleSubmit(async (data) => {
-    const searchParams = new URLSearchParams({
-      birthDate: parseBirthDateForRequest(data.birthDate),
-      cpf: data.cpf,
-    });
-    const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL}/projects?${searchParams.toString()}`
-    );
-    const payload = await response.json();
+  const { mutateAsync: getProjects, isError } = useMutation({
+    ...mutations.getProjects(),
+    onSuccess: (projects) => {
+      queryClient.setQueryData<ProjectsById>(PROJECTS_QUERY_KEY, projects);
+      navigate({ to: "/steps" });
+    },
+  });
 
-    console.log(payload);
+  const handleSubmit = form.handleSubmit(async (data) => {
+    try {
+      const projects = await getProjects({
+        birthDate: parseBirthDateForRequest(data.birthDate),
+        cpf: data.cpf,
+      });
+
+      queryClient.setQueryData<ProjectsById>(PROJECTS_QUERY_KEY, projects);
+      await navigate({ to: "/steps" });
+    } catch {
+      console.error("Failed to get projects");
+    }
   });
 
   return (
@@ -177,10 +200,30 @@ export function ClientForm() {
             />
 
             <Field>
-              <Button className="h-12 text-base font-bold" type="submit">
-                Consultar projetos
+              <Button
+                className="h-12 text-base font-bold"
+                type="submit"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting
+                  ? "Consultando..."
+                  : "Consultar projetos"}
               </Button>
             </Field>
+            {isError && (
+              <Field>
+                <Alert className="bg-destructive text-background border-destructive">
+                  <IconAlertCircleFilled />
+                  <AlertTitle className="text-background">
+                    Ops! Algo deu errado.
+                  </AlertTitle>
+                  <AlertDescription className="text-background">
+                    Verifique se o CPF e a data de nascimento estão corretos e
+                    tente novamente.
+                  </AlertDescription>
+                </Alert>
+              </Field>
+            )}
           </FieldGroup>
         </CardContent>
       </Card>

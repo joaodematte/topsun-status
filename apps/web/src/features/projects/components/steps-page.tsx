@@ -1,4 +1,8 @@
-import { IconAlertCircleFilled } from "@tabler/icons-react";
+import {
+  IconAlertCircleFilled,
+  IconHelpFilled,
+  IconPlusFilled,
+} from "@tabler/icons-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import type { ProjectsQuery } from "@topsun-status/shared";
@@ -81,10 +85,8 @@ export function StepsPage({ query }: StepsPageProps) {
         <Button
           className="h-12 w-full text-base font-bold"
           variant="outline"
-          render={<Link to="/" />}
-        >
-          Nova consulta
-        </Button>
+          render={<Link to="/">Nova consulta</Link>}
+        />
       </>
     );
   }
@@ -103,15 +105,40 @@ export function StepsPage({ query }: StepsPageProps) {
   return (
     <>
       <div className="mx-auto mb-12 w-full max-w-lg">
-        <h1 className="text-primary-foreground mb-4 text-center text-4xl font-extrabold text-pretty">
+        <h1 className="text-primary-foreground mb-4 text-center text-2xl font-extrabold text-pretty md:text-4xl">
           Andamento de seus projetos
         </h1>
-        <p className="text-primary-foreground/85 mx-auto text-center text-lg">
+        <p className="text-primary-foreground/85 mx-auto text-center text-sm md:text-lg">
           Acompanhe as principais etapas dos seus projetos com a TOPSUN!
         </p>
       </div>
 
       <ProjectsAccordion projects={projectList} />
+
+      <Button
+        className="mb-2 h-12 w-full text-base font-bold"
+        variant="default"
+        render={
+          <Link to="/">
+            <IconPlusFilled />
+            Nova consulta
+          </Link>
+        }
+      />
+      <Button
+        className="h-12 w-full text-base font-bold"
+        variant="outline"
+        render={
+          <a
+            href="https://wa.me/554730548001"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <IconHelpFilled />
+            Dúvidas? Fale com a TOPSUN no WhatsApp!
+          </a>
+        }
+      />
     </>
   );
 }

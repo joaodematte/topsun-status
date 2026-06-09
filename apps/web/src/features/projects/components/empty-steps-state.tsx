@@ -16,10 +16,8 @@ export function EmptyStepsState() {
       <Button
         className="mb-1 h-12 w-full text-base font-bold"
         variant="outline"
-        render={<Link to="/" />}
-      >
-        Nova consulta
-      </Button>
+        render={<Link to="/">Nova consulta</Link>}
+      />
     </>
   );
 }

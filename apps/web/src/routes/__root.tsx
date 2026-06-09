@@ -45,10 +45,10 @@ function RootDocument() {
       </head>
       <body>
         <div className="relative min-h-svh w-full">
-          <div className="bg-primary absolute inset-0 -z-10 h-[33vh] w-full overflow-hidden">
+          <div className="bg-primary absolute inset-x-2 top-2 -z-10 h-[48vh] overflow-hidden rounded-4xl md:h-[40vh]">
             <img
               alt="Sunny"
-              className="absolute inset-0 w-5xl -translate-x-48 -translate-y-48 lg:block"
+              className="absolute inset-0 hidden w-5xl -translate-x-48 -translate-y-48 2xl:block"
               src="/sunny.png"
             />
           </div>

@@ -6,7 +6,13 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**", ".output/**", ".vercel/**"],
-      "env": ["DATABASE_URL", "HOSTNAME", "PORT", "VITE_SERVER_URL"]
+      "env": [
+        "DATABASE_URL",
+        "HOSTNAME",
+        "PORT",
+        "VITE_SERVER_URL",
+        "VITE_CDN_URL"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]

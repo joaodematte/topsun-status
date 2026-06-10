@@ -17,7 +17,7 @@ export const Route = createRootRouteWithContext()({
         rel: "stylesheet",
       },
       {
-        href: "/icon.svg",
+        href: `${import.meta.env.VITE_CDN_URL}/icon.svg`,
         rel: "icon",
         type: "image/svg+xml",
       },
@@ -49,7 +49,8 @@ function RootDocument() {
             <img
               alt="Sunny"
               className="absolute inset-0 hidden w-5xl -translate-x-48 -translate-y-48 2xl:block"
-              src="/sunny.png"
+              src={`${import.meta.env.VITE_CDN_URL}/sunny.png`}
+              fetchPriority="high"
             />
           </div>
           <div className="relative z-10 container mx-auto max-w-2xl px-4 py-12">
@@ -58,7 +59,8 @@ function RootDocument() {
                 <img
                   alt="TOPSUN Energia"
                   className="mx-auto mb-6 w-[256px]"
-                  src="/logo.png"
+                  src={`${import.meta.env.VITE_CDN_URL}/logo.png`}
+                  fetchPriority="high"
                 />
               </Link>
             </div>

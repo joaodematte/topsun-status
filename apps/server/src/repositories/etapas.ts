@@ -19,7 +19,7 @@ const findEtapasByProjetoIds = async (
 ): Promise<Etapa[]> => {
   const placeholders = projetosId.map(() => "?").join(", ");
   const [steps] = await database.execute<Etapa[]>(
-    `SELECT * FROM etapas WHERE cod_coleta_etapa IN (${placeholders})`,
+    `SELECT cod_cfg_etapa, status_etapa, cod_coleta_etapa FROM etapas WHERE cod_coleta_etapa IN (${placeholders})`,
     projetosId
   );
 
@@ -44,7 +44,10 @@ export const getEtapasByProjetosId = async (
       continue;
     }
 
-    project.steps.push(step);
+    project.steps.push({
+      cod_cfg_etapa: step.cod_cfg_etapa,
+      status_etapa: step.status_etapa,
+    });
   }
 
   return projectsById;

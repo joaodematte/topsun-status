@@ -21,6 +21,15 @@ First, install the dependencies:
 bun install
 ```
 
+Copy the environment templates and fill in your values:
+
+```bash
+cp apps/server/.env.example apps/server/.env
+cp apps/web/.env.example apps/web/.env
+```
+
+Set `DATABASE_URL` in `apps/server/.env` to your MySQL connection string. Ask the team for production CDN values if needed.
+
 Then, run the development server:
 
 ```bash
@@ -28,7 +37,24 @@ bun run dev
 ```
 
 Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
-The API is running at [http://localhost:3000](http://localhost:3000).
+The API is running at [http://localhost:8888](http://localhost:8888).
+
+### Environment variables
+
+| Variable          | App    | Required   | Description                                                                            |
+| ----------------- | ------ | ---------- | -------------------------------------------------------------------------------------- |
+| `DATABASE_URL`    | server | yes        | MySQL connection string                                                                |
+| `HOSTNAME`        | server | no         | Bind address (default `0.0.0.0`)                                                       |
+| `PORT`            | server | no         | API port (default `8888`)                                                              |
+| `CORS_ORIGIN`     | server | production | Comma-separated browser origins allowed by CORS (dev: include `http://localhost:3001`) |
+| `VITE_SERVER_URL` | web    | yes        | API base URL (must match server port, e.g. `http://localhost:8888`)                    |
+| `VITE_CDN_URL`    | web    | yes        | Static assets CDN base URL                                                             |
+
+Templates live in `apps/server/.env.example` and `apps/web/.env.example`.
+
+### API: formatted CPF
+
+The `/projects` endpoint expects the `cpf` query parameter in **formatted** Brazilian CPF notation (`000.000.000-00`). The database stores CPF values with punctuation; unformatted digits will not match. The web form already submits formatted CPF.
 
 ## UI Customization
 

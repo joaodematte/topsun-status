@@ -13,6 +13,12 @@
       "skillPath": "skills/hono/SKILL.md",
       "computedHash": "220e5e1b12bbaeec49ec362b6e2262d77632d0536e9758bba9acbbc323fef990"
     },
+    "improve": {
+      "source": "shadcn/improve",
+      "sourceType": "github",
+      "skillPath": "skills/improve/SKILL.md",
+      "computedHash": "8b7819751d99142b48e8b15051c776a3713a438683268184cbcc98e4218516bc"
+    },
     "shadcn": {
       "source": "shadcn/ui",
       "sourceType": "github",

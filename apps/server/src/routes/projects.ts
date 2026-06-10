@@ -2,9 +2,12 @@ import { projectsQuerySchema } from "@topsun-status/shared";
 import { Hono } from "hono";
 
 import { AppError } from "@/errors";
+import { rateLimit } from "@/middleware/rate-limit";
 import { getProjetosSteps } from "@/services/get-projetos-steps";
 
 export const projectsRoute = new Hono();
+
+projectsRoute.use("/*", rateLimit({ max: 30, windowMs: 60_000 }));
 
 projectsRoute.get("/", async (c) => {
   const parsed = projectsQuerySchema.safeParse({
@@ -13,7 +16,7 @@ projectsRoute.get("/", async (c) => {
   });
 
   if (!parsed.success) {
-    return c.json({ error: "CPF and birthDate are required" }, 400);
+    return c.json({ error: "Invalid CPF or birthDate format" }, 400);
   }
 
   try {

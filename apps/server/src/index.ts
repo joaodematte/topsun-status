@@ -7,7 +7,12 @@ import { projectsRoute } from "@/routes/projects";
 
 const app = new Hono();
 
-app.use("*", cors());
+app.use(
+  "*",
+  cors({
+    origin: process.env.CORS_ORIGIN,
+  })
+);
 app.use(logger());
 
 app.route("/health", healthRoute);
